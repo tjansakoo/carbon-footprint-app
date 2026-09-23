@@ -1,0 +1,598 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>คาร์บอนฟุตพริ้นท์ใน 1 วัน</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#EAF0E4;
+    --paper:#FCFBF4;
+    --paper-line:#DCE3D2;
+    --ink:#212D20;
+    --ink-soft:#5B6957;
+    --leaf:#3E6B4C;
+    --leaf-dark:#2C4E37;
+    --ember:#B0532C;
+    --sky:#3D6E80;
+    --gold:#B9862F;
+    --radius:14px;
+    box-sizing:border-box;
+  }
+  *{box-sizing:inherit;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:var(--bg);
+    color:var(--ink);
+    font-family:"Space Grotesk", "Noto Sans Thai", system-ui, -apple-system, sans-serif;
+    line-height:1.55;
+    padding-bottom:env(safe-area-inset-bottom,0px);
+  }
+  body::before{
+    content:"";
+    position:fixed;
+    inset:0;
+    pointer-events:none;
+    background:
+      radial-gradient(circle at 8% 12%, rgba(62,107,76,0.08), transparent 40%),
+      radial-gradient(circle at 92% 85%, rgba(176,83,44,0.07), transparent 40%);
+    z-index:0;
+  }
+  .wrap{max-width:1180px;margin:0 auto;padding:32px 20px 64px;position:relative;z-index:1;}
+
+  header.top{padding:8px 0 28px;border-bottom:2px solid var(--ink);margin-bottom:36px;}
+  .eyebrow{
+    font-family:"IBM Plex Mono", monospace;
+    font-size:13px;
+    letter-spacing:0.02em;
+    color:var(--leaf-dark);
+    display:flex;
+    align-items:center;
+    gap:10px;
+    margin-bottom:10px;
+  }
+  .eyebrow .dot{width:8px;height:8px;border-radius:50%;background:var(--leaf);display:inline-block;}
+  h1{font-size:clamp(28px,4vw,44px);margin:0 0 10px;font-weight:700;letter-spacing:-0.01em;}
+  .lede{max-width:640px;color:var(--ink-soft);font-size:16px;margin:0;}
+
+  h2.section-title{
+    font-size:22px;
+    margin:0 0 4px;
+    display:flex;
+    align-items:baseline;
+    gap:10px;
+  }
+  h2.section-title span.tag{
+    font-family:"IBM Plex Mono",monospace;
+    font-size:13px;
+    background:var(--ink);
+    color:var(--paper);
+    padding:3px 9px;
+    border-radius:6px;
+    letter-spacing:0.03em;
+  }
+  p.section-sub{color:var(--ink-soft);margin:0 0 22px;font-size:14.5px;max-width:620px;}
+
+  .layout{
+    display:grid;
+    grid-template-columns:1.15fr 0.85fr;
+    gap:28px;
+    align-items:start;
+  }
+  @media (max-width:880px){
+    .layout{grid-template-columns:1fr;}
+  }
+
+  .panel{
+    background:rgba(255,255,255,0.55);
+    border:1px solid var(--paper-line);
+    border-radius:var(--radius);
+    padding:22px 22px 26px;
+  }
+
+  .cat-block{margin-bottom:22px;}
+  .cat-block:last-child{margin-bottom:0;}
+  .cat-head{
+    display:flex;
+    align-items:center;
+    gap:9px;
+    font-weight:600;
+    font-size:15px;
+    margin-bottom:12px;
+    color:var(--ink);
+  }
+  .cat-head .swatch{width:11px;height:11px;border-radius:3px;flex-shrink:0;}
+  .row-field{
+    display:grid;
+    grid-template-columns:1fr 108px;
+    gap:10px;
+    align-items:center;
+    padding:8px 0;
+    border-bottom:1px dashed var(--paper-line);
+  }
+  .row-field:last-child{border-bottom:none;}
+  .row-field label{font-size:14px;color:var(--ink);}
+  .row-field .factor{
+    display:block;
+    font-family:"IBM Plex Mono",monospace;
+    font-size:11.5px;
+    color:var(--ink-soft);
+    margin-top:2px;
+  }
+  .row-field input{
+    width:100%;
+    padding:8px 10px;
+    border-radius:8px;
+    border:1.5px solid var(--paper-line);
+    background:#fff;
+    font-family:"IBM Plex Mono",monospace;
+    font-size:14px;
+    color:var(--ink);
+    text-align:right;
+  }
+  .row-field input:focus{outline:2px solid var(--leaf);outline-offset:1px;border-color:var(--leaf);}
+
+  .presets{display:flex;gap:10px;flex-wrap:wrap;margin:18px 0 0;}
+  button{
+    font-family:"Space Grotesk", sans-serif;
+    font-weight:600;
+    font-size:13.5px;
+    cursor:pointer;
+    border-radius:9px;
+    padding:9px 15px;
+    border:1.5px solid var(--ink);
+    background:transparent;
+    color:var(--ink);
+    transition:transform .12s ease, background .15s ease, color .15s ease;
+  }
+  button:hover{background:var(--ink);color:var(--paper);}
+  button:active{transform:scale(0.97);}
+  button.primary{background:var(--leaf);border-color:var(--leaf);color:#fff;}
+  button.primary:hover{background:var(--leaf-dark);border-color:var(--leaf-dark);}
+  button.ghost{border-color:var(--paper-line);color:var(--ink-soft);}
+  button.ghost:hover{background:var(--ink-soft);border-color:var(--ink-soft);}
+
+  /* Receipt panel */
+  .receipt-wrap{position:sticky;top:20px;}
+  @media (max-width:880px){.receipt-wrap{position:static;}}
+  .receipt{
+    background:var(--paper);
+    border:1px solid var(--paper-line);
+    border-radius:6px;
+    padding:24px 22px 30px;
+    position:relative;
+    box-shadow:0 18px 40px -22px rgba(33,45,32,0.35);
+  }
+  .receipt::after{
+    content:"";
+    position:absolute;
+    left:0;right:0;bottom:-11px;height:22px;
+    background:
+      linear-gradient(-45deg, transparent 11px, var(--paper) 0),
+      linear-gradient(45deg, transparent 11px, var(--paper) 0);
+    background-size:22px 22px;
+    background-position:left bottom;
+    background-repeat:repeat-x;
+  }
+  .receipt-title{
+    font-family:"IBM Plex Mono",monospace;
+    font-size:13px;
+    text-align:center;
+    letter-spacing:0.06em;
+    color:var(--ink-soft);
+    margin-bottom:4px;
+  }
+  .receipt-title strong{color:var(--ink);display:block;font-size:15px;font-weight:600;letter-spacing:0.01em;margin-bottom:2px;}
+  .receipt hr{border:none;border-top:1px dashed var(--ink-soft);opacity:0.4;margin:14px 0;}
+  .rcat{font-family:"IBM Plex Mono",monospace;font-size:12px;color:var(--leaf-dark);text-transform:uppercase;letter-spacing:0.05em;margin:14px 0 6px;}
+  .rline{
+    display:flex;
+    justify-content:space-between;
+    gap:10px;
+    font-family:"IBM Plex Mono",monospace;
+    font-size:12.5px;
+    color:var(--ink);
+    padding:3px 0;
+  }
+  .rline .rval{white-space:nowrap;font-weight:600;}
+  .rempty{font-family:"IBM Plex Mono",monospace;font-size:12px;color:var(--ink-soft);font-style:italic;padding:4px 0 0;}
+  .rtotal{
+    display:flex;justify-content:space-between;align-items:baseline;
+    margin-top:16px;padding-top:14px;border-top:2px solid var(--ink);
+  }
+  .rtotal .label{font-family:"IBM Plex Mono",monospace;font-size:13px;color:var(--ink-soft);}
+  .rtotal .val{font-family:"IBM Plex Mono",monospace;font-size:26px;font-weight:600;color:var(--ink);}
+  .rtotal .val span{font-size:14px;font-weight:500;color:var(--ink-soft);}
+
+  .gauge{margin-top:18px;}
+  .gauge-track{
+    height:10px;border-radius:6px;background:#E4E9DC;overflow:hidden;position:relative;
+  }
+  .gauge-fill{height:100%;background:var(--leaf);border-radius:6px 0 0 6px;transition:width .35s ease, background .35s ease;}
+  .gauge-marker{
+    position:absolute;top:-3px;width:2px;height:16px;background:var(--ink);
+  }
+  .gauge-labels{display:flex;justify-content:space-between;font-family:"IBM Plex Mono",monospace;font-size:10.5px;color:var(--ink-soft);margin-top:5px;}
+  .verdict{
+    margin-top:14px;font-size:13.5px;padding:11px 13px;border-radius:9px;
+    background:rgba(62,107,76,0.1);color:var(--leaf-dark);border:1px solid rgba(62,107,76,0.25);
+  }
+  .verdict.warn{background:rgba(176,83,44,0.09);color:var(--ember);border-color:rgba(176,83,44,0.25);}
+  .annual{
+    margin-top:14px;font-family:"IBM Plex Mono",monospace;font-size:11.5px;color:var(--ink-soft);text-align:center;
+  }
+
+  /* Challenge section */
+  .challenge-grid{display:grid;grid-template-columns:1.1fr 0.9fr;gap:28px;align-items:start;}
+  @media (max-width:880px){.challenge-grid{grid-template-columns:1fr;}}
+  .check-item{
+    display:flex;gap:14px;align-items:flex-start;
+    padding:14px 0;border-bottom:1px dashed var(--paper-line);
+  }
+  .check-item:last-child{border-bottom:none;}
+  .check-item input[type=checkbox]{
+    width:22px;height:22px;margin-top:2px;accent-color:var(--leaf);flex-shrink:0;cursor:pointer;
+  }
+  .check-item .txt strong{display:block;font-size:14.5px;margin-bottom:2px;}
+  .check-item .txt span{font-family:"IBM Plex Mono",monospace;font-size:12px;color:var(--ink-soft);}
+
+  .combo-bars{margin-top:8px;}
+  .combo-row{margin-bottom:16px;}
+  .combo-row .lbl{display:flex;justify-content:space-between;font-size:13px;margin-bottom:5px;}
+  .combo-row .lbl b{font-family:"IBM Plex Mono",monospace;}
+  .combo-track{height:14px;border-radius:7px;background:#E4E9DC;overflow:hidden;}
+  .combo-fill{height:100%;border-radius:7px;transition:width .35s ease;}
+  .combo-fill.before{background:var(--ember);}
+  .combo-fill.after{background:var(--leaf);}
+
+  footer{
+    margin-top:56px;padding-top:22px;border-top:1px solid var(--paper-line);
+    font-size:12.5px;color:var(--ink-soft);display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px;
+  }
+
+  section.block{margin-bottom:52px;}
+
+  @media (prefers-reduced-motion: reduce){
+    *{transition:none !important;}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="top">
+    <div class="eyebrow"><span class="dot"></span>กิจกรรมประเมินคาร์บอนฟุตพริ้นท์ · สำหรับนิสิต</div>
+    <h1>คาร์บอนใน 1 วันของฉัน</h1>
+    <p class="lede">กรอกกิจกรรมที่ทำเมื่อวานหรือวันนี้ ระบบจะออกใบเสร็จคาร์บอนให้ทันที แล้วลองดูว่าปรับตรงไหนได้บ้างเพื่อลดให้ได้อย่างน้อยวันละ 2 กก.</p>
+  </header>
+
+  <!-- ACTIVITY 1 -->
+  <section class="block" id="calc">
+    <h2 class="section-title"><span class="tag">กิจกรรมที่ 1</span>ประเมินคาร์บอนใน 1 วัน</h2>
+    <p class="section-sub">คำนวณค่าคาร์บอนไดออกไซด์เทียบเท่า (kgCO2e) จาก 4 หมวดหลักในชีวิตประจำวัน — กรอกเฉพาะช่องที่เกี่ยวกับวันของคุณ ที่เหลือปล่อยว่างหรือใส่ 0 ได้เลย</p>
+
+    <div class="layout">
+      <div class="panel">
+
+        <div class="cat-block">
+          <div class="cat-head"><span class="swatch" style="background:var(--sky)"></span>1. การเดินทาง</div>
+          <div class="row-field">
+            <label>รถยนต์ส่วนตัว (น้ำมัน)<span class="factor">กม. × 0.21 kgCO2e</span></label>
+            <input type="number" min="0" step="0.5" id="t_car" placeholder="กม.">
+          </div>
+          <div class="row-field">
+            <label>รถจักรยานยนต์<span class="factor">กม. × 0.06 kgCO2e</span></label>
+            <input type="number" min="0" step="0.5" id="t_moto" placeholder="กม.">
+          </div>
+          <div class="row-field">
+            <label>รถไฟฟ้า (BTS/MRT)<span class="factor">กม. × 0.04 kgCO2e</span></label>
+            <input type="number" min="0" step="0.5" id="t_train" placeholder="กม.">
+          </div>
+          <div class="row-field">
+            <label>รถประจำทาง<span class="factor">กม. × 0.03 kgCO2e</span></label>
+            <input type="number" min="0" step="0.5" id="t_bus" placeholder="กม.">
+          </div>
+          <div class="row-field">
+            <label>เดิน / ปั่นจักรยาน<span class="factor">ไม่ปล่อยคาร์บอน — ไม่ต้องกรอก</span></label>
+            <input type="number" disabled placeholder="0 kg">
+          </div>
+        </div>
+
+        <div class="cat-block">
+          <div class="cat-head"><span class="swatch" style="background:var(--ember)"></span>2. อาหารและการกิน</div>
+          <div class="row-field">
+            <label>เนื้อวัว (1 จาน/มื้อ)<span class="factor">มื้อ × 2.50 kgCO2e</span></label>
+            <input type="number" min="0" step="1" id="f_beef" placeholder="มื้อ">
+          </div>
+          <div class="row-field">
+            <label>เนื้อหมู / เนื้อไก่ (1 จาน/มื้อ)<span class="factor">มื้อ × 0.80 kgCO2e</span></label>
+            <input type="number" min="0" step="1" id="f_meat" placeholder="มื้อ">
+          </div>
+          <div class="row-field">
+            <label>มังสวิรัติ / พืชผัก (1 จาน/มื้อ)<span class="factor">มื้อ × 0.40 kgCO2e</span></label>
+            <input type="number" min="0" step="1" id="f_veg" placeholder="มื้อ">
+          </div>
+          <div class="row-field">
+            <label>กาแฟ / เครื่องดื่มใส่นม (1 แก้ว)<span class="factor">แก้ว × 0.30 kgCO2e</span></label>
+            <input type="number" min="0" step="1" id="f_coffee" placeholder="แก้ว">
+          </div>
+          <div class="row-field">
+            <label>เครื่องดื่มบรรจุขวดพลาสติก (1 ขวด)<span class="factor">ขวด × 0.15 kgCO2e</span></label>
+            <input type="number" min="0" step="1" id="f_bottle" placeholder="ขวด">
+          </div>
+        </div>
+
+        <div class="cat-block">
+          <div class="cat-head"><span class="swatch" style="background:var(--gold)"></span>3. พลังงานและเครื่องใช้ไฟฟ้า</div>
+          <div class="row-field">
+            <label>เครื่องปรับอากาศ (1,200 BTU)<span class="factor">ชม. × 0.50 kgCO2e</span></label>
+            <input type="number" min="0" step="0.5" id="e_ac" placeholder="ชม.">
+          </div>
+          <div class="row-field">
+            <label>คอมพิวเตอร์ / โน้ตบุ๊ก<span class="factor">ชม. × 0.05 kgCO2e</span></label>
+            <input type="number" min="0" step="0.5" id="e_pc" placeholder="ชม.">
+          </div>
+          <div class="row-field">
+            <label>ชาร์จสมาร์ทโฟน<span class="factor">ครั้ง × 0.01 kgCO2e</span></label>
+            <input type="number" min="0" step="1" id="e_phone" placeholder="ครั้ง">
+          </div>
+          <div class="row-field">
+            <label>ดูสตรีมมิ่ง / วิดีโอ<span class="factor">ชม. × 0.04 kgCO2e</span></label>
+            <input type="number" min="0" step="0.5" id="e_stream" placeholder="ชม.">
+          </div>
+        </div>
+
+        <div class="cat-block">
+          <div class="cat-head"><span class="swatch" style="background:var(--leaf)"></span>4. ขยะและการใช้ทรัพยากร</div>
+          <div class="row-field">
+            <label>ขยะทั่วไป / เศษอาหาร<span class="factor">กก. × 0.50 kgCO2e</span></label>
+            <input type="number" min="0" step="0.1" id="w_waste" placeholder="กก.">
+          </div>
+          <div class="row-field">
+            <label>ถุงพลาสติก / แก้วใช้แล้วทิ้ง<span class="factor">ชิ้น × 0.05 kgCO2e</span></label>
+            <input type="number" min="0" step="1" id="w_plastic" placeholder="ชิ้น">
+          </div>
+        </div>
+
+        <div class="presets">
+          <button class="ghost" id="loadHigh" type="button">โหลดตัวอย่าง High‑Carbon</button>
+          <button class="ghost" id="loadEco" type="button">โหลดตัวอย่าง Eco‑Friendly</button>
+          <button class="ghost" id="clearAll" type="button">ล้างข้อมูลทั้งหมด</button>
+        </div>
+      </div>
+
+      <div class="receipt-wrap">
+        <div class="receipt">
+          <div class="receipt-title"><strong>ใบเสร็จคาร์บอน</strong>รายการปล่อย CO2e วันนี้</div>
+          <div id="receiptBody"><!-- filled by JS --></div>
+          <div class="rtotal">
+            <span class="label">รวมทั้งวัน</span>
+            <span class="val" id="grandTotal">0.00<span> kgCO2e</span></span>
+          </div>
+          <div class="gauge">
+            <div class="gauge-track">
+              <div class="gauge-fill" id="gaugeFill" style="width:0%"></div>
+              <div class="gauge-marker" style="left:47.5%"></div>
+            </div>
+            <div class="gauge-labels"><span>0</span><span>ค่าเฉลี่ยคนไทย ≈ 9.5 kg</span><span>20+</span></div>
+          </div>
+          <div class="verdict" id="verdict">ยังไม่ได้กรอกข้อมูล — เริ่มกรอกด้านซ้ายได้เลย</div>
+          <div class="annual" id="annualNote"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ACTIVITY 2 -->
+  <section class="block" id="challenge">
+    <h2 class="section-title"><span class="tag">กิจกรรมที่ 2</span>Low‑Carbon Challenge</h2>
+    <p class="section-sub">เลือกพฤติกรรมที่จะปรับเปลี่ยนวันนี้ เป้าหมายคือลดคาร์บอนให้ได้อย่างน้อย 2 kgCO2e — ติ๊กแล้วดูผลลัพธ์เทียบกับยอดรวมจากกิจกรรมที่ 1 ทันที</p>
+
+    <div class="challenge-grid">
+      <div class="panel">
+        <div class="check-item">
+          <input type="checkbox" class="chal" data-reduce="0.50" id="c1">
+          <label for="c1" class="txt"><strong>ถอดปลั๊ก / ลดแอร์ 1 ชั่วโมง</strong><span>ลดได้ประมาณ 0.50 kgCO2e</span></label>
+        </div>
+        <div class="check-item">
+          <input type="checkbox" class="chal" data-reduce="1.70" id="c2">
+          <label for="c2" class="txt"><strong>งดเนื้อวัว 1 มื้อ (เปลี่ยนเป็นไก่/พืช)</strong><span>ลดได้ประมาณ 1.70 kgCO2e</span></label>
+        </div>
+        <div class="check-item">
+          <input type="checkbox" class="chal" data-reduce="0.15" id="c3">
+          <label for="c3" class="txt"><strong>พกแก้วน้ำ / ถุงผ้าส่วนตัว</strong><span>ลดได้ประมาณ 0.10–0.20 kgCO2e</span></label>
+        </div>
+        <div class="check-item">
+          <input type="checkbox" class="chal" data-reduce="4.00" id="c4">
+          <label for="c4" class="txt"><strong>ติดรถไปกับเพื่อน / ใช้ขนส่งสาธารณะ</strong><span>ลดได้ประมาณ 3.00–5.00 kgCO2e</span></label>
+        </div>
+
+        <div class="presets">
+          <button class="ghost" id="clearChallenge" type="button">ยกเลิกทั้งหมด</button>
+        </div>
+      </div>
+
+      <div class="panel">
+        <div class="rtotal" style="border-top:none;padding-top:0;margin-top:0;">
+          <span class="label">ลดได้วันนี้</span>
+          <span class="val" id="reduceTotal">0.00<span> kgCO2e</span></span>
+        </div>
+        <div class="verdict" id="challengeVerdict" style="margin-top:12px;">เลือกอย่างน้อย 1 ข้อเพื่อเริ่มภารกิจ</div>
+
+        <div class="combo-bars">
+          <div class="combo-row">
+            <div class="lbl"><span>ก่อนปรับพฤติกรรม</span><b id="beforeVal">0.00 kg</b></div>
+            <div class="combo-track"><div class="combo-fill before" id="beforeBar" style="width:0%"></div></div>
+          </div>
+          <div class="combo-row">
+            <div class="lbl"><span>หลังปรับพฤติกรรม</span><b id="afterVal">0.00 kg</b></div>
+            <div class="combo-track"><div class="combo-fill after" id="afterBar" style="width:0%"></div></div>
+          </div>
+        </div>
+        <p style="font-size:12.5px;color:var(--ink-soft);margin-top:14px;">แถบด้านบนอ้างอิงจากยอดรวมในกิจกรรมที่ 1 ด้านบน ถ้ายังไม่ได้กรอก ยอด "ก่อนปรับ" จะเป็น 0</p>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <span>ค่าเฉลี่ยคนไทยปล่อยคาร์บอนประมาณ 9–10 kgCO2e ต่อคนต่อวัน (≈ 3.5 ตันต่อปี)</span>
+    <span>ทำเพื่อใช้ในกิจกรรมนิสิต · ตัวเลขเป็นค่าประมาณเพื่อการศึกษา ไม่ใช่ค่าทางการ</span>
+  </footer>
+
+</div>
+
+<script>
+(function(){
+  const F = {
+    t_car:0.21, t_moto:0.06, t_train:0.04, t_bus:0.03,
+    f_beef:2.50, f_meat:0.80, f_veg:0.40, f_coffee:0.30, f_bottle:0.15,
+    e_ac:0.50, e_pc:0.05, e_phone:0.01, e_stream:0.04,
+    w_waste:0.50, w_plastic:0.05
+  };
+
+  const LABELS = {
+    t_car:"รถยนต์ส่วนตัว", t_moto:"รถจักรยานยนต์", t_train:"รถไฟฟ้า (BTS/MRT)", t_bus:"รถประจำทาง",
+    f_beef:"เนื้อวัว", f_meat:"เนื้อหมู/ไก่", f_veg:"มังสวิรัติ", f_coffee:"กาแฟ/นม", f_bottle:"ขวดพลาสติก",
+    e_ac:"แอร์", e_pc:"คอมพิวเตอร์", e_phone:"ชาร์จมือถือ", e_stream:"สตรีมมิ่ง",
+    w_waste:"ขยะทั่วไป", w_plastic:"ถุง/แก้วพลาสติก"
+  };
+
+  const UNITS = {
+    t_car:"กม.", t_moto:"กม.", t_train:"กม.", t_bus:"กม.",
+    f_beef:"มื้อ", f_meat:"มื้อ", f_veg:"มื้อ", f_coffee:"แก้ว", f_bottle:"ขวด",
+    e_ac:"ชม.", e_pc:"ชม.", e_phone:"ครั้ง", e_stream:"ชม.",
+    w_waste:"กก.", w_plastic:"ชิ้น"
+  };
+
+  const CATS = [
+    {name:"การเดินทาง", keys:["t_car","t_moto","t_train","t_bus"]},
+    {name:"อาหารและการกิน", keys:["f_beef","f_meat","f_veg","f_coffee","f_bottle"]},
+    {name:"พลังงานและไฟฟ้า", keys:["e_ac","e_pc","e_phone","e_stream"]},
+    {name:"ขยะและทรัพยากร", keys:["w_waste","w_plastic"]}
+  ];
+
+  function val(id){
+    const el = document.getElementById(id);
+    const n = parseFloat(el.value);
+    return isNaN(n) || n < 0 ? 0 : n;
+  }
+
+  function fmt(n){ return n.toLocaleString('en-US', {minimumFractionDigits:2, maximumFractionDigits:2}); }
+
+  let grand = 0;
+
+  function render(){
+    let body = "";
+    grand = 0;
+    CATS.forEach(cat=>{
+      let catTotal = 0;
+      let lines = "";
+      cat.keys.forEach(k=>{
+        const qty = val(k);
+        if(qty > 0){
+          const kg = qty * F[k];
+          catTotal += kg;
+          lines += `<div class="rline"><span>${LABELS[k]} — ${qty} ${UNITS[k]}</span><span class="rval">${fmt(kg)}</span></div>`;
+        }
+      });
+      grand += catTotal;
+      body += `<div class="rcat">${cat.name}</div>`;
+      body += lines || `<div class="rempty">— ไม่มีรายการ —</div>`;
+    });
+    document.getElementById('receiptBody').innerHTML = body;
+    document.getElementById('grandTotal').innerHTML = fmt(grand) + '<span> kgCO2e</span>';
+
+    const pct = Math.min(100, (grand / 20) * 100);
+    const fill = document.getElementById('gaugeFill');
+    fill.style.width = pct + "%";
+    fill.style.background = grand <= 9.5 ? "var(--leaf)" : (grand <= 14 ? "var(--gold)" : "var(--ember)");
+
+    const verdict = document.getElementById('verdict');
+    verdict.classList.remove('warn');
+    if(grand === 0){
+      verdict.textContent = "ยังไม่ได้กรอกข้อมูล — เริ่มกรอกด้านซ้ายได้เลย";
+    } else if(grand <= 5){
+      verdict.textContent = `ทำได้ดีมาก — ${fmt(grand)} kg ต่ำกว่าค่าเฉลี่ยคนไทยเกินครึ่ง`;
+    } else if(grand <= 9.5){
+      verdict.textContent = `อยู่ระดับต่ำกว่าค่าเฉลี่ยคนไทย (9.5 kg) — ปรับอีกนิดก็ดีขึ้นได้`;
+    } else if(grand <= 14){
+      verdict.textContent = `สูงกว่าค่าเฉลี่ยคนไทยเล็กน้อย — ลองดูกิจกรรมที่ 2 ด้านล่าง`;
+      verdict.classList.add('warn');
+    } else {
+      verdict.textContent = `สูงกว่าค่าเฉลี่ยคนไทยมาก — เริ่มจากข้อที่ลดง่ายที่สุดในกิจกรรมที่ 2`;
+      verdict.classList.add('warn');
+    }
+
+    const annualTon = (grand * 365 / 1000);
+    document.getElementById('annualNote').textContent = grand > 0
+      ? `หากทำแบบนี้ทุกวัน ≈ ${annualTon.toFixed(2)} ตันคาร์บอนต่อปี`
+      : "";
+
+    renderChallenge();
+  }
+
+  function renderChallenge(){
+    let reduce = 0;
+    document.querySelectorAll('.chal').forEach(cb=>{
+      if(cb.checked) reduce += parseFloat(cb.dataset.reduce);
+    });
+    document.getElementById('reduceTotal').innerHTML = fmt(reduce) + '<span> kgCO2e</span>';
+
+    const cv = document.getElementById('challengeVerdict');
+    if(reduce === 0){
+      cv.textContent = "เลือกอย่างน้อย 1 ข้อเพื่อเริ่มภารกิจ";
+      cv.classList.remove('warn');
+    } else if(reduce >= 2){
+      cv.textContent = `ผ่านภารกิจ! ลดได้ ${fmt(reduce)} kgCO2e ถึงเป้าหมายวันละ 2 kg แล้ว`;
+      cv.classList.remove('warn');
+    } else {
+      cv.textContent = `ลดได้ ${fmt(reduce)} kgCO2e — อีก ${fmt(2-reduce)} kg ถึงเป้าหมาย`;
+      cv.classList.add('warn');
+    }
+
+    const before = grand;
+    const after = Math.max(0, grand - reduce);
+    const maxScale = Math.max(before, 15, 1);
+    document.getElementById('beforeVal').textContent = fmt(before) + " kg";
+    document.getElementById('afterVal').textContent = fmt(after) + " kg";
+    document.getElementById('beforeBar').style.width = (before/maxScale*100) + "%";
+    document.getElementById('afterBar').style.width = (after/maxScale*100) + "%";
+  }
+
+  Object.keys(F).forEach(id=>{
+    document.getElementById(id).addEventListener('input', render);
+  });
+  document.querySelectorAll('.chal').forEach(cb=>{
+    cb.addEventListener('change', renderChallenge);
+  });
+
+  document.getElementById('clearAll').addEventListener('click', ()=>{
+    Object.keys(F).forEach(id=> document.getElementById(id).value = "");
+    render();
+  });
+  document.getElementById('clearChallenge').addEventListener('click', ()=>{
+    document.querySelectorAll('.chal').forEach(cb=> cb.checked = false);
+    renderChallenge();
+  });
+
+  document.getElementById('loadHigh').addEventListener('click', ()=>{
+    const preset = {t_car:30, f_beef:1, f_coffee:1, e_ac:10, w_waste:1};
+    Object.keys(F).forEach(id=> document.getElementById(id).value = "");
+    Object.entries(preset).forEach(([k,v])=> document.getElementById(k).value = v);
+    render();
+  });
+  document.getElementById('loadEco').addEventListener('click', ()=>{
+    const preset = {t_train:20, f_meat:1, e_ac:6.2, w_waste:0.3};
+    Object.keys(F).forEach(id=> document.getElementById(id).value = "");
+    Object.entries(preset).forEach(([k,v])=> document.getElementById(k).value = v);
+    render();
+  });
+
+  render();
+})();
+</script>
+</body>
+</html>
